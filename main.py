@@ -5,11 +5,17 @@ app = FastAPI()
 
 @app.get("/get-h2")
 async def get_h2():
+
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
-        page=await browser.new_page()
+        browser = await p.chromium.launch(
+            headless=True,
+            args=["--no-sandbox", "--disable-dev-shm-usage"]
+        )
+
+        page = await browser.new_page()
         await page.goto("https://www.yr.no/en")
-        h2_texts=await page.locator("h2").all_inner_texts()
+
+        h2_texts = await page.locator("h2").all_inner_texts()
 
         await browser.close()
 
